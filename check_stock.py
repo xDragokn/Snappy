@@ -21,19 +21,22 @@ def check_stock():
     
     soup = BeautifulSoup(response.text, "html.parser")
     
-    # Find the button and check if it indicates "Sold out" or "Order Now"
+    # Find the button and check if it indicates "Sold out" or "Order Now" or "Order"
     stock_button = soup.find("button", {"data-product-id": "7046239387712"})
     if stock_button:
         print(f"Found stock button with text: {stock_button.text.strip()}")
+        print(f"Stock button HTML: {stock_button}")
+
         if stock_button.get("disabled") is not None or "Sold out" in stock_button.text:
             send_discord_notification(False)  # Notify that it's not in stock
-        elif "Order Now" in stock_button.text:
+        elif "Order Now" in stock_button.text or "Order" in stock_button.text:
             send_discord_notification(True)  # Notify that it's in stock
         else:
             print("Stock status unknown.")
     else:
         print("Could not find the stock button.")
-
+        # Optionally, send a notification or log this event
+    
 # Function to send a notification to Discord
 def send_discord_notification(is_in_stock):
     if not webhook_url:
@@ -62,3 +65,6 @@ def send_discord_notification(is_in_stock):
 # Run the stock check once
 if __name__ == "__main__":
     check_stock()
+
+
+
