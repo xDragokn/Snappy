@@ -4,7 +4,7 @@ import os
 
 # URL of the product page and Discord webhook URL
 url = "https://ninjutso.com/products/snappyfire-8k-receiver?_pos=1&_sid=e0128d0dd&_ss=r"
-webhook_url = os.environ.get("DISCORD_WEBHOOK_URL")
+webhook_url = os.environ.get("https://discord.com/api/webhooks/1299602576622358548/N-MHMR8PsdSlbaVj24AlC_shQBtwYecQ7FBZBzARwVg15bLgt9EB-PbPJQ0uDZ46X9G6")
 
 # Function to check if the item is in stock
 def check_stock():
