@@ -23,5 +23,5 @@ jobs:
 
       - name: Run stock checker
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_URL: ${{ https://discord.com/api/webhooks/1299602576622358548/N-MHMR8PsdSlbaVj24AlC_shQBtwYecQ7FBZBzARwVg15bLgt9EB-PbPJQ0uDZ46X9G6 }}
         run: python check_stock.py
