@@ -2,18 +2,19 @@ import requests
 from bs4 import BeautifulSoup
 import os
 
-# URL of the product page and Discord webhook URL
+# URL of the product page
 url = "https://ninjutso.com/products/snappyfire-8k-receiver?_pos=1&_sid=e0128d0dd&_ss=r"
-webhook_url = os.environ.get("https://discord.com/api/webhooks/1299602576622358548/N-MHMR8PsdSlbaVj24AlC_shQBtwYecQ7FBZBzARwVg15bLgt9EB-PbPJQ0uDZ46X9G6")
+
+# Get Discord webhook URL from environment variable
+webhook_url = os.environ.get("DISCORD_WEBHOOK_URL")
 
 # Function to check if the item is in stock
 def check_stock():
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0"
     }
     response = requests.get(url, headers=headers)
     
-    # Ensure the request was successful
     print(f"Fetched page with status code: {response.status_code}")
     if response.status_code != 200:
         print(f"Failed to retrieve the page, status code: {response.status_code}")
@@ -21,27 +22,28 @@ def check_stock():
     
     soup = BeautifulSoup(response.text, "html.parser")
     
-    # Find the button and check if it indicates "Sold out" or "Order Now" or "Order"
+    # Find the stock button
     stock_button = soup.find("button", {"data-product-id": "7046239387712"})
     if stock_button:
-        print(f"Found stock button with text: {stock_button.text.strip()}")
+        button_text = stock_button.text.strip().lower()
+        print(f"Found stock button with text: '{button_text}'")
         print(f"Stock button HTML: {stock_button}")
-
-        if stock_button.get("disabled") is not None or "Sold out" in stock_button.text:
-            send_discord_notification(False)  # Notify that it's not in stock
-        elif "Order Now" in stock_button.text or "Order" in stock_button.text:
-            send_discord_notification(True)  # Notify that it's in stock
+        
+        # Use the 'disabled' attribute to determine stock status
+        if stock_button.get("disabled"):
+            send_discord_notification(False)
         else:
-            print("Stock status unknown.")
+            send_discord_notification(True)
     else:
         print("Could not find the stock button.")
-        # Optionally, send a notification or log this event
-    
+
 # Function to send a notification to Discord
 def send_discord_notification(is_in_stock):
     if not webhook_url:
         print("Discord webhook URL not provided.")
         return
+    else:
+        print(f"Webhook URL length: {len(webhook_url)} characters")
 
     if is_in_stock:
         message = f":rotating_light: SnappyFire 8K Receiver is now in stock! @dragokn [Order Now]({url})"
@@ -52,7 +54,6 @@ def send_discord_notification(is_in_stock):
         "content": message
     }
     
-    # Debugging output to see what is being sent
     print(f"Sending message: {message}")
     
     response = requests.post(webhook_url, json=data)
@@ -65,6 +66,3 @@ def send_discord_notification(is_in_stock):
 # Run the stock check once
 if __name__ == "__main__":
     check_stock()
-
-
-
