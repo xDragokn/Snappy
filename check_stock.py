@@ -12,6 +12,12 @@ def check_stock():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
     }
     response = requests.get(url, headers=headers)
+    
+    # Ensure the request was successful
+    if response.status_code != 200:
+        print(f"Failed to retrieve the page, status code: {response.status_code}")
+        return
+    
     soup = BeautifulSoup(response.text, "html.parser")
     
     # Find the button and check if it indicates "Sold out" or "Order Now"
@@ -34,11 +40,15 @@ def send_discord_notification(is_in_stock):
     data = {
         "content": message
     }
+    
+    # Debugging output to see what is being sent
+    print(f"Sending message: {message}")
+    
     response = requests.post(webhook_url, json=data)
     if response.status_code == 204:
         print("Notification sent to Discord.")
     else:
-        print("Failed to send notification.")
+        print(f"Failed to send notification, status code: {response.status_code}")
 
 # Main loop to check stock every 60 seconds
 while True:
