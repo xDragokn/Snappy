@@ -22,31 +22,29 @@ def check_stock():
     
     soup = BeautifulSoup(response.text, "html.parser")
     
-    # Find the stock button
-    stock_button = soup.find("button", {"data-product-id": "7046239387712"})
-    if stock_button:
-        button_text = stock_button.text.strip().lower()
-        print(f"Found stock button with text: '{button_text}'")
-        print(f"Stock button HTML: {stock_button}")
-        
-        # Use the 'disabled' attribute to determine stock status
-        if stock_button.get("disabled"):
-            send_discord_notification(False)
+    # Check the product availability from the meta tag
+    availability_tag = soup.find("meta", {"property": "product:availability"})
+    if availability_tag:
+        availability = availability_tag["content"]
+        print(f"Product availability: {availability}")
+
+        if availability == "instock":
+            send_discord_notification(True)  # Notify that it's in stock
+        elif availability == "oos":
+            send_discord_notification(False)  # Notify that it's out of stock
         else:
-            send_discord_notification(True)
+            print("Unknown availability status.")
     else:
-        print("Could not find the stock button.")
+        print("Could not find the product availability tag.")
 
 # Function to send a notification to Discord
 def send_discord_notification(is_in_stock):
     if not webhook_url:
         print("Discord webhook URL not provided.")
         return
-    else:
-        print(f"Webhook URL length: {len(webhook_url)} characters")
 
     if is_in_stock:
-        message = f":rotating_light: SnappyFire 8K Receiver is now in stock! <@325536985454477322> [Order Now]({url})"
+        message = f":rotating_light: SnappyFire 8K Receiver is now in stock! @dragokn [Order Now]({url})"
     else:
         message = ":rotating_light: Product not in stock"
     
@@ -66,3 +64,6 @@ def send_discord_notification(is_in_stock):
 # Run the stock check once
 if __name__ == "__main__":
     check_stock()
+
+
+
