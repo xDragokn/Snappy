@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import os
 
 # URL of the product page
-url = "https://ninjutso.com/products/snappyfire-8k-receiver?_pos=1&_sid=e0128d0dd&_ss=r"
+url = "https://ninjutso.com/products/ninjutso-sora-v2"
 
 # Get Discord webhook URL from environment variable
 webhook_url = os.environ.get("DISCORD_WEBHOOK_URL")
