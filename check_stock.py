@@ -60,4 +60,3 @@ def send_discord_notification():
 if __name__ == "__main__":
     check_stock()
 
-
