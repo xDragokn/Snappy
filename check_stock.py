@@ -29,19 +29,24 @@ def check_stock():
         print(f"Product availability: {availability}")
 
         if availability == "instock":
-            send_discord_notification()  # Notify that it's in stock
+            send_discord_notification(True)  # Notify that it's in stock
+        elif availability == "oos":
+            send_discord_notification(False)  # Notify that it's out of stock
         else:
-            print("Product is not in stock.")
+            print("Unknown availability status.")
     else:
         print("Could not find the product availability tag.")
 
 # Function to send a notification to Discord
-def send_discord_notification():
+def send_discord_notification(is_in_stock):
     if not webhook_url:
         print("Discord webhook URL not provided.")
         return
 
-    message = f":rotating_light: SnappyFire 8K Receiver is now in stock! @everyone [Order Now]({url})"
+    if is_in_stock:
+        message = f":rotating_light: SnappyFire 8K Receiver is now in stock! @everyone [Order Now]({url})"
+    else:
+        message = ":rotating_light: Product not in stock"
     
     data = {
         "content": message
@@ -59,4 +64,5 @@ def send_discord_notification():
 # Run the stock check once
 if __name__ == "__main__":
     check_stock()
+
 
