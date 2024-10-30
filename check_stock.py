@@ -46,7 +46,7 @@ def send_discord_notification(is_in_stock):
     if is_in_stock:
         message = f":rotating_light: SnappyFire 8K Receiver is now in stock! @everyone [Order Now]({url})"
     else:
-        message = ":rotating_light: Product not in stock"
+        message = ":rotating_light: Product not in stock @everyone"
     
     data = {
         "content": message
